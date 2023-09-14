@@ -17,6 +17,15 @@ public class Book implements Serializable {
 	private String releaseDate;		//출판일(월/년)
 	private String condition;	//신상품 or 중고품 or 재생품
 	private String filename;	//제품 이미지 파일명 (7장 추가)
+	private int quantity;	//장바구니에 담은 갯수
+	
+	
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 	
 	public String getFilename() {
 		return filename;

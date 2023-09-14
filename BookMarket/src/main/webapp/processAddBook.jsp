@@ -4,6 +4,8 @@
 <%@ page import = "java.util.*" %>
 <%@ page import = "dto.Book"%>
 <%@ page import = "dao.BookRepository"%>
+<%@ page import = "java.sql.*" %>
+<%@ include file = "dbconn.jsp" %>
 
 <%
 request.setCharacterEncoding("UTF-8");
@@ -20,6 +22,7 @@ request.setCharacterEncoding("UTF-8");
 	String name = request.getParameter("name");
 	String unitPrice = request.getParameter("unitPrice");
 	String author = request.getParameter("author");
+	String publisher = request.getParameter("publisher");
 	String releaseDate = request.getParameter("releaseDate");
 	String totalPage = request.getParameter("totalPage");
 	String description = request.getParameter("description");
@@ -49,22 +52,27 @@ request.setCharacterEncoding("UTF-8");
 	String fname = (String) files.nextElement();
 	String fileName = multi.getFilesystemName(fname);
 	
-	BookRepository dao = BookRepository.getInstance();
-
-	Book newBook = new Book();
-	newBook.setBookId(bookId);
-	newBook.setName(name);
-	newBook.setUnitPrice(price);
-	newBook.setAuthor(author);
-	newBook.setReleaseDate(releaseDate);
-	//newBook.setTotalPage(totalPage);
-	newBook.setDescription(description);
-	newBook.setCategory(category);
-	//newBook.setUnisInStock(unisInStock);
-	newBook.setCondition(condition);
-	newBook.setFilename(filename);
-
-	dao.addBook(newBook);
+	PreparedStatement pstmt = null;
+	
+	String sql = "insert into product values(?,?,?,?,?,?,?,?,?,?,?,?)";
+	pstmt = conn.prepareStatement(sql);
+	pstmt.setString(1, bookId);
+	pstmt.setString(2, name);
+	pstmt.setInt(3, price);
+	pstmt.setString(4, author);
+	pstmt.setString(5, publisher);
+	pstmt.setString(6, description);
+	pstmt.setString(7, category);
+	pstmt.setLong(8, stock);
+	pstmt.setString(9, totalPage);
+	pstmt.setString(10, releaseDate);
+	pstmt.setString(11, condition);
+	pstmt.setString(12, fileName);
+	pstmt.executeUpdate();
+	
+	if(pstmt != null) pstmt.close();
+	if(conn != null) conn.close();
+	
 
 	response.sendRedirect("books.jsp");
 %>

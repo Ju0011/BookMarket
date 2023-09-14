@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" %>
+<%@ page import = "java.sql.*" %>
 <%@ page import = "java.util.ArrayList"%>
 <%@ page import = "dto.Book"%>
 <%@ page import = "dao.BookRepository"%>
@@ -22,23 +23,34 @@
 	%>
 	<div class="container">
 		<div class= "col" align="left">
+			<%@ include file="dbconn.jsp"%>
 			<%
-			for (int i = 0; i < listOfProducts.size(); i++) {
-					Book book = listOfProducts.get(i);
-			%>
-			<div>
-			<img src="c:/upload/<%= book.getFilename() %>" style = "width : 20%">
-				<h5><strong><%=book.getName()%></strong>></h5>
-				<p><%=book.getDescription()%>
-				<a href = "./book.jsp?id=<%=book.getBookId() %>"
-				class = "btn btn-secondary" role = "button" >상세 정보 &raquo;</a>
-				
-				<p><%=book.getAuthor()%> | <%=book.getPublisher()%> | <%=book.getUnitPrice()%>원
-				
-				<hr>
+		PreparedStatement pstmt  = null;
+		ResultSet rs = null;
+		String sql = "select * from book";
+		pstmt = conn.prepareStatement(sql);
+		rs = pstmt.executeQuery();
+		while(rs.next()){
+		%>
+
+			<div class="col-md-4">
+				<img src="c:/upload/<%=rs.getString("b_fileName")%>"
+					style="width: 100%">
+				<h3><%=rs.getString("b_name")%></h3>
+				<p><%=rs.getString("b_description")%>
+				<p><%=rs.getString("b_UnitPrice")%>원
+				<p>
+					<a href="./book.jsp?id=<%=rs.getString("b_id")%>"
+						class="btn btn-secondary" role="button">상세정보&raquo;></a>
 			</div>
 			<%
 			}
+			if (rs != null)
+			rs.close();
+			if (pstmt != null)
+			pstmt.close();
+			if (conn != null)
+			conn.close();
 			%>
 		</div>
 		<hr>
